@@ -2095,7 +2095,7 @@ public class UnifiedSet<T>
     }
 
     @Override
-    public T put(T key)
+    public T addOrGet(T key)
     {
         int index = this.index(key);
         Object cur = this.table[index];

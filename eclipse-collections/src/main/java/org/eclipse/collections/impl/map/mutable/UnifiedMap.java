@@ -361,10 +361,10 @@ public class UnifiedMap<K, V> extends AbstractMutableMap<K, V>
             this.table[index + 1] = value;
             return result;
         }
-        return this.chainedPut(key, index, value);
+        return this.addOrGetFromChain(key, index, value);
     }
 
-    private V chainedPut(K key, int index, V value)
+    private V addOrGetFromChain(K key, int index, V value)
     {
         if (this.table[index] == CHAINED_KEY)
         {
@@ -1524,10 +1524,10 @@ public class UnifiedMap<K, V> extends AbstractMutableMap<K, V>
             this.table[index + 1] = value;
             return;
         }
-        this.chainedPutForTrim(key, index, value);
+        this.addOrGetFromChainForTrim(key, index, value);
     }
 
-    private void chainedPutForTrim(K key, int index, V value)
+    private void addOrGetFromChainForTrim(K key, int index, V value)
     {
         if (this.table[index] == CHAINED_KEY)
         {

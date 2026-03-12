@@ -2250,12 +2250,12 @@ public class UnifiedSetWithHashingStrategy<T>
 
         if (cur instanceof ChainedBucket || !this.nonNullTableObjectEquals(cur, key))
         {
-            return this.chainedPut(key, index);
+            return this.addOrGetFromChain(key, index);
         }
         return this.nonSentinel(cur);
     }
 
-    private T chainedPut(T key, int index)
+    private T addOrGetFromChain(T key, int index)
     {
         Object realKey = UnifiedSetWithHashingStrategy.toSentinelIfNull(key);
         if (this.table[index] instanceof ChainedBucket)
