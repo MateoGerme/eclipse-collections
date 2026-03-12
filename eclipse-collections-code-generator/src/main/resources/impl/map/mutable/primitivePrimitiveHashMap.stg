@@ -64,7 +64,7 @@ import org.eclipse.collections.api.block.procedure.Procedure2;
 import org.eclipse.collections.api.block.procedure.primitive.<name1>Procedure;
 import org.eclipse.collections.api.block.procedure.primitive.<name1><name2>Procedure;
 import org.eclipse.collections.api.block.procedure.primitive.ObjectIntProcedure;
-<if(!primitive1.bytePrimitive)>import org.eclipse.collections.impl.SpreadFunctions;<endif>
+<if(!primitive1.bytePrimitive)>import org.eclipse.collections.impl.ProbeSpreadFunctions;<endif>
 import org.eclipse.collections.api.collection.primitive.Mutable<name2>Collection;
 import org.eclipse.collections.api.iterator.<name1>Iterator;
 import org.eclipse.collections.api.iterator.Mutable<name1>Iterator;
@@ -1683,8 +1683,8 @@ int probeTwo(<type1> element, int removedIndex)
 
 int probeThree(<type1> element, int removedIndex)
 {
-    int nextIndex = (int) SpreadFunctions.<type1>SpreadOne(element)<if(sameTwoPrimitives)> \<\< 1<endif>;
-    int spreadTwo = <(reverseSpread.(type1))()>(SpreadFunctions.<type1>SpreadTwo(element)) | 1;
+    int nextIndex = (int) ProbeSpreadFunctions.<type1>SpreadOne(element)<if(sameTwoPrimitives)> \<\< 1<endif>;
+    int spreadTwo = <(reverseSpread.(type1))()>(ProbeSpreadFunctions.<type1>SpreadTwo(element)) | 1;
 
     while (true)
     {

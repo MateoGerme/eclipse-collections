@@ -18,7 +18,7 @@ import net.openhft.koloboke.collect.map.hash.HashLongLongMaps;
 import org.eclipse.collections.api.list.primitive.MutableLongList;
 import org.eclipse.collections.api.map.primitive.MutableLongLongMap;
 import org.eclipse.collections.api.set.primitive.MutableLongSet;
-import org.eclipse.collections.impl.SpreadFunctions;
+import org.eclipse.collections.impl.ProbeSpreadFunctions;
 import org.eclipse.collections.impl.jmh.runner.AbstractJMHTestRunner;
 import org.eclipse.collections.impl.list.mutable.primitive.LongArrayList;
 import org.eclipse.collections.impl.map.mutable.primitive.LongLongHashMap;
@@ -62,7 +62,7 @@ public class LongLongMapSmallStressTest extends AbstractJMHTestRunner
 
     private int ecIndexTwo(int element)
     {
-        return this.mask((int) SpreadFunctions.longSpreadTwo(element));
+        return this.mask((int) ProbeSpreadFunctions.longSpreadTwo(element));
     }
 
     private int mask(int spread)

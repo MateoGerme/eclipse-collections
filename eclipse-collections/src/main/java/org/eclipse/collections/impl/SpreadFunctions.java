@@ -10,9 +10,9 @@
 
 package org.eclipse.collections.impl;
 
-public final class SpreadFunctions
+public final class ProbeSpreadFunctions
 {
-    private SpreadFunctions()
+    private ProbeSpreadFunctions()
     {
     }
 
@@ -63,64 +63,64 @@ public final class SpreadFunctions
     public static long doubleSpreadOne(double element)
     {
         long code = Double.doubleToLongBits(element);
-        return SpreadFunctions.sixtyFourBitSpread1(code);
+        return ProbeSpreadFunctions.sixtyFourBitSpread1(code);
     }
 
     public static long doubleSpreadTwo(double element)
     {
         long code = Double.doubleToLongBits(element);
-        return SpreadFunctions.sixtyFourBitSpread2(code);
+        return ProbeSpreadFunctions.sixtyFourBitSpread2(code);
     }
 
     public static long longSpreadOne(long element)
     {
-        return SpreadFunctions.sixtyFourBitSpread1(element);
+        return ProbeSpreadFunctions.sixtyFourBitSpread1(element);
     }
 
     public static long longSpreadTwo(long element)
     {
-        return SpreadFunctions.sixtyFourBitSpread2(element);
+        return ProbeSpreadFunctions.sixtyFourBitSpread2(element);
     }
 
     public static int intSpreadOne(int element)
     {
-        return SpreadFunctions.thirtyTwoBitSpread1(element);
+        return ProbeSpreadFunctions.thirtyTwoBitSpread1(element);
     }
 
     public static int intSpreadTwo(int element)
     {
-        return SpreadFunctions.thirtyTwoBitSpread2(element);
+        return ProbeSpreadFunctions.thirtyTwoBitSpread2(element);
     }
 
     public static int floatSpreadOne(float element)
     {
         int code = Float.floatToIntBits(element);
-        return SpreadFunctions.thirtyTwoBitSpread1(code);
+        return ProbeSpreadFunctions.thirtyTwoBitSpread1(code);
     }
 
     public static int floatSpreadTwo(float element)
     {
         int code = Float.floatToIntBits(element);
-        return SpreadFunctions.thirtyTwoBitSpread2(code);
+        return ProbeSpreadFunctions.thirtyTwoBitSpread2(code);
     }
 
     public static int shortSpreadOne(short element)
     {
-        return SpreadFunctions.thirtyTwoBitSpread1(element);
+        return ProbeSpreadFunctions.thirtyTwoBitSpread1(element);
     }
 
     public static int shortSpreadTwo(short element)
     {
-        return SpreadFunctions.thirtyTwoBitSpread2(element);
+        return ProbeSpreadFunctions.thirtyTwoBitSpread2(element);
     }
 
     public static int charSpreadOne(char element)
     {
-        return SpreadFunctions.thirtyTwoBitSpread1(element);
+        return ProbeSpreadFunctions.thirtyTwoBitSpread1(element);
     }
 
     public static int charSpreadTwo(char element)
     {
-        return SpreadFunctions.thirtyTwoBitSpread2(element);
+        return ProbeSpreadFunctions.thirtyTwoBitSpread2(element);
     }
 }

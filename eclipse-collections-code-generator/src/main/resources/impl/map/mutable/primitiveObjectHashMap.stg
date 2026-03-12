@@ -113,7 +113,7 @@ import org.eclipse.collections.api.set.primitive.Mutable<name>Set;
 import org.eclipse.collections.api.set.sorted.MutableSortedSet;
 import org.eclipse.collections.api.tuple.Pair;
 import org.eclipse.collections.api.tuple.primitive.<name>ObjectPair;
-<if(!primitive.bytePrimitive)>import org.eclipse.collections.impl.SpreadFunctions;<endif>
+<if(!primitive.bytePrimitive)>import org.eclipse.collections.impl.ProbeSpreadFunctions;<endif>
 import org.eclipse.collections.impl.bag.mutable.HashBag;
 import org.eclipse.collections.impl.bag.mutable.primitive.BooleanHashBag;
 import org.eclipse.collections.impl.bag.mutable.primitive.ByteHashBag;
@@ -3615,8 +3615,8 @@ int probeTwo(<type> element, int removedIndex)
 
 int probeThree(<type> element, int removedIndex)
 {
-    int nextIndex = (int) SpreadFunctions.<type>SpreadOne(element);
-    int spreadTwo = <(reverseSpread.(type))()>(SpreadFunctions.<type>SpreadTwo(element)) | 1;
+    int nextIndex = (int) ProbeSpreadFunctions.<type>SpreadOne(element);
+    int spreadTwo = <(reverseSpread.(type))()>(ProbeSpreadFunctions.<type>SpreadTwo(element)) | 1;
 
     while (true)
     {

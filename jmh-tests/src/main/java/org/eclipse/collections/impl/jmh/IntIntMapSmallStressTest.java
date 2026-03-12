@@ -22,7 +22,7 @@ import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.list.primitive.MutableIntList;
 import org.eclipse.collections.api.map.primitive.MutableIntIntMap;
 import org.eclipse.collections.api.set.primitive.MutableIntSet;
-import org.eclipse.collections.impl.SpreadFunctions;
+import org.eclipse.collections.impl.ProbeSpreadFunctions;
 import org.eclipse.collections.impl.jmh.runner.AbstractJMHTestRunner;
 import org.eclipse.collections.impl.list.mutable.FastList;
 import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
@@ -73,7 +73,7 @@ public class IntIntMapSmallStressTest extends AbstractJMHTestRunner
 
     private int ecIndexTwo(int element)
     {
-        return this.mask(SpreadFunctions.intSpreadTwo(element));
+        return this.mask(ProbeSpreadFunctions.intSpreadTwo(element));
     }
 
     private int mask(int spread)

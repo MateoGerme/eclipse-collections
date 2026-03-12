@@ -15,7 +15,7 @@ import java.util.Random;
 import org.eclipse.collections.api.list.primitive.MutableIntList;
 import org.eclipse.collections.api.map.primitive.MutableIntIntMap;
 import org.eclipse.collections.api.set.primitive.MutableIntSet;
-import org.eclipse.collections.impl.SpreadFunctions;
+import org.eclipse.collections.impl.ProbeSpreadFunctions;
 import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
 import org.junit.Assert;
@@ -193,11 +193,11 @@ public class IntIntMapProbeTest
         int upper = Integer.MAX_VALUE;
 
         MutableIntList collidingNumbers = new IntArrayList();
-        int numberOne = this.smallMask(SpreadFunctions.intSpreadOne(0xABCDEF1));
-        int numberTwo = this.smallMask(SpreadFunctions.intSpreadTwo(0xABCDEF1));
+        int numberOne = this.smallMask(ProbeSpreadFunctions.intSpreadOne(0xABCDEF1));
+        int numberTwo = this.smallMask(ProbeSpreadFunctions.intSpreadTwo(0xABCDEF1));
         for (int i = lower; i < upper && collidingNumbers.size() < SMALL_COLLIDING_KEY_COUNT; i++)
         {
-            if (this.smallMask(SpreadFunctions.intSpreadOne(i)) == numberOne && this.smallMask(SpreadFunctions.intSpreadTwo(i)) == numberTwo)
+            if (this.smallMask(ProbeSpreadFunctions.intSpreadOne(i)) == numberOne && this.smallMask(ProbeSpreadFunctions.intSpreadTwo(i)) == numberTwo)
             {
                 collidingNumbers.add(i);
             }
@@ -213,7 +213,7 @@ public class IntIntMapProbeTest
         MutableIntList collidingNumbers = new IntArrayList();
         for (int i = lower; i < upper && collidingNumbers.size() < LARGE_COLLIDING_KEY_COUNT; i++)
         {
-            int index = this.largeMask(SpreadFunctions.intSpreadOne(i));
+            int index = this.largeMask(ProbeSpreadFunctions.intSpreadOne(i));
             if (index >= number && index <= number + 100)
             {
                 collidingNumbers.add(i);
