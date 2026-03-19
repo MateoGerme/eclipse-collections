@@ -62,7 +62,7 @@ public class LongLongMapSmallStressTest extends AbstractJMHTestRunner
 
     private int ecIndexTwo(int element)
     {
-        return this.mask((int) ProbeSpreadFunctions.longSpreadTwo(element));
+        return this.mask((int) ProbeSpreadFunctions.longSpread(element, ProbeSpreadFunctions.SpreadVariant.SECONDARY));
     }
 
     private int mask(int spread)

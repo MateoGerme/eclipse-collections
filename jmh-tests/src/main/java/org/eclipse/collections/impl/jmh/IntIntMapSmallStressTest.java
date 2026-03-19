@@ -73,7 +73,7 @@ public class IntIntMapSmallStressTest extends AbstractJMHTestRunner
 
     private int ecIndexTwo(int element)
     {
-        return this.mask(ProbeSpreadFunctions.intSpreadTwo(element));
+        return this.mask(ProbeSpreadFunctions.intSpread(element, ProbeSpreadFunctions.SpreadVariant.SECONDARY));
     }
 
     private int mask(int spread)

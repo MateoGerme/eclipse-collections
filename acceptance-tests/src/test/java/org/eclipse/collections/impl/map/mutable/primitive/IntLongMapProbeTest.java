@@ -192,11 +192,12 @@ public class IntLongMapProbeTest
         int upper = Integer.MAX_VALUE;
 
         MutableIntList collidingNumbers = new IntArrayList();
-        int numberOne = this.smallMask(ProbeSpreadFunctions.intSpreadOne(0xABCDEF1));
-        int numberTwo = this.smallMask(ProbeSpreadFunctions.intSpreadTwo(0xABCDEF1));
+        int numberOne = this.smallMask(ProbeSpreadFunctions.intSpread(0xABCDEF1, ProbeSpreadFunctions.SpreadVariant.PRIMARY));
+        int numberTwo = this.smallMask(ProbeSpreadFunctions.intSpread(0xABCDEF1, ProbeSpreadFunctions.SpreadVariant.SECONDARY));
         for (int i = lower; i < upper && collidingNumbers.size() < SMALL_COLLIDING_KEY_COUNT; i++)
         {
-            if (this.smallMask(ProbeSpreadFunctions.intSpreadOne(i)) == numberOne && this.smallMask(ProbeSpreadFunctions.intSpreadTwo(i)) == numberTwo)
+            if (this.smallMask(ProbeSpreadFunctions.intSpread(i, ProbeSpreadFunctions.SpreadVariant.PRIMARY)) == numberOne
+                    && this.smallMask(ProbeSpreadFunctions.intSpread(i, ProbeSpreadFunctions.SpreadVariant.SECONDARY)) == numberTwo)
             {
                 collidingNumbers.add(i);
             }
@@ -212,7 +213,7 @@ public class IntLongMapProbeTest
         MutableIntList collidingNumbers = new IntArrayList();
         for (int i = lower; i < upper && collidingNumbers.size() < LARGE_COLLIDING_KEY_COUNT; i++)
         {
-            int index = this.largeMask(ProbeSpreadFunctions.intSpreadOne(i));
+            int index = this.largeMask(ProbeSpreadFunctions.intSpread(i, ProbeSpreadFunctions.SpreadVariant.PRIMARY));
             if (index >= number && index <= number + 100)
             {
                 collidingNumbers.add(i);
