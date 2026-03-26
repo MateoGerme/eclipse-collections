@@ -86,14 +86,6 @@ public final class Procedures
         };
     }
 
-    /**
-     * @deprecated since 1.2 - Inlineable
-     */
-    @Deprecated
-    public static <T> Procedure<T> fromProcedureWithInt(ObjectIntProcedure<? super T> objectIntProcedure)
-    {
-        return Procedures.fromObjectIntProcedure(objectIntProcedure);
-    }
 
     public static <T> Procedure<T> fromObjectIntProcedure(ObjectIntProcedure<? super T> objectIntProcedure)
     {
