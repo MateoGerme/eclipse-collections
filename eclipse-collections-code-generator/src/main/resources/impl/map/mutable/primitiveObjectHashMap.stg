@@ -3615,8 +3615,8 @@ int probeTwo(<type> element, int removedIndex)
 
 int probeThree(<type> element, int removedIndex)
 {
-    int nextIndex = (int) ProbeSpreadFunctions.<type>SpreadOne(element);
-    int spreadTwo = <(reverseSpread.(type))()>(ProbeSpreadFunctions.<type>SpreadTwo(element)) | 1;
+    int nextIndex = (int) ProbeSpreadFunctions.<type>Spread(element, ProbeSpreadFunctions.SpreadVariant.PRIMARY);
+    int spreadTwo = <(reverseSpread.(type))()>(ProbeSpreadFunctions.<type>Spread(element, ProbeSpreadFunctions.SpreadVariant.SECONDARY)) | 1;
 
     while (true)
     {

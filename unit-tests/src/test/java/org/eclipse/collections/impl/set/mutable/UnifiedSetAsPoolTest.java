@@ -28,7 +28,7 @@ public class UnifiedSetAsPoolTest
     public void getReturnsOriginalObjectForIdenticalObject()
     {
         Integer firstPooledObject = 1;
-        this.staticPool.put(firstPooledObject);
+        this.staticPool.addOrGet(firstPooledObject);
         Assert.assertSame(firstPooledObject, this.staticPool.get(firstPooledObject));
     }
 
@@ -37,7 +37,7 @@ public class UnifiedSetAsPoolTest
     {
         UnifiedSet<AlwaysEqual> pool = UnifiedSet.newSet();
         AlwaysEqual firstObject = new AlwaysEqual();
-        pool.put(firstObject);
+        pool.addOrGet(firstObject);
         AlwaysEqual equalObject = new AlwaysEqual();  // deliberate new instance
         Assert.assertSame(firstObject, pool.get(equalObject));
     }
@@ -61,7 +61,7 @@ public class UnifiedSetAsPoolTest
     public void putReturnsPassedInObject()
     {
         Integer firstObject = 1;
-        Object returnedObject = this.staticPool.put(firstObject);
+        Object returnedObject = this.staticPool.addOrGet(firstObject);
         Assert.assertSame(returnedObject, firstObject);
     }
 
@@ -70,9 +70,9 @@ public class UnifiedSetAsPoolTest
     {
         AlwaysEqual firstObject = new AlwaysEqual();
         UnifiedSet<AlwaysEqual> pool = UnifiedSet.newSet();
-        pool.put(firstObject);
+        pool.addOrGet(firstObject);
         AlwaysEqual secondObject = new AlwaysEqual();  // deliberate new instance
-        Object returnedObject = pool.put(secondObject);
+        Object returnedObject = pool.addOrGet(secondObject);
 
         Assert.assertSame(returnedObject, firstObject);
         Assert.assertSame(firstObject, pool.get(secondObject));
@@ -83,7 +83,7 @@ public class UnifiedSetAsPoolTest
     {
         Integer firstObject = 1;
 
-        this.staticPool.put(firstObject);
+        this.staticPool.addOrGet(firstObject);
         Integer returnedObject = this.staticPool.removeFromPool(firstObject);
 
         Assert.assertSame(returnedObject, firstObject);

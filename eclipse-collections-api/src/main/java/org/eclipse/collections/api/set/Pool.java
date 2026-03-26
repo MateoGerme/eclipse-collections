@@ -23,15 +23,24 @@ public interface Pool<V>
     void clear();
 
     /**
-     * Puts {@code key} into the pool. If there is no existing object that is equal
+     * Adds {@code key} to the pool if needed. If there is no existing object that is equal
      * to key, key will be added to the pool and the return value will be the same instance.
      * If there is an existing object in the pool that is equal to {@code key}, the pool will remain unchanged
-     * and the pooled instance will be is returned.
+     * and the pooled instance will be returned.
      *
      * @param key the value to add if not in the pool
      * @return the object reference in the pool equal to key (either key itself or the existing reference)
      */
-    V put(V key);
+    V addOrGet(V key);
+
+    /**
+     * @deprecated in favor of {@link #addOrGet(Object)}
+     */
+    @Deprecated
+    default V put(V key)
+    {
+        return this.addOrGet(key);
+    }
 
     int size();
 

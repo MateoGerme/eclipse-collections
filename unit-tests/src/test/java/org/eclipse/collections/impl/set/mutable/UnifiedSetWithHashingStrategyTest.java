@@ -537,7 +537,7 @@ public class UnifiedSetWithHashingStrategyTest extends AbstractUnifiedSetTestCas
         for (int i = 0; i < set.size(); i++)
         {
             Integer value = COLLISIONS.get(i);
-            Assert.assertSame(value, set.put(value));
+            Assert.assertSame(value, set.addOrGet(value));
         }
 
         // force rehashing at each step of putting a new colliding entry
@@ -546,15 +546,15 @@ public class UnifiedSetWithHashingStrategyTest extends AbstractUnifiedSetTestCas
             Pool<Integer> pool = UnifiedSetWithHashingStrategy.newSet(INTEGER_HASHING_STRATEGY, i).withAll(COLLISIONS.subList(0, i));
             if (i == 2)
             {
-                pool.put(Integer.valueOf(1));
+                pool.addOrGet(Integer.valueOf(1));
             }
             if (i == 4)
             {
-                pool.put(Integer.valueOf(1));
-                pool.put(Integer.valueOf(2));
+                pool.addOrGet(Integer.valueOf(1));
+                pool.addOrGet(Integer.valueOf(2));
             }
             Integer value = COLLISIONS.get(i);
-            Assert.assertSame(value, pool.put(value));
+            Assert.assertSame(value, pool.addOrGet(value));
         }
 
         // cover one case not covered in the above: a bucket with only one entry and a low capacity forcing a rehash
@@ -563,16 +563,16 @@ public class UnifiedSetWithHashingStrategyTest extends AbstractUnifiedSetTestCas
         // clear the bucket to one element
         pool.removeFromPool(COLLISION_2);
         // increase the occupied count to the threshold
-        pool.put(Integer.valueOf(1));
-        pool.put(Integer.valueOf(2));
+        pool.addOrGet(Integer.valueOf(1));
+        pool.addOrGet(Integer.valueOf(2));
 
         // put the colliding value back and force the rehash
-        Assert.assertSame(COLLISION_2, pool.put(COLLISION_2));
+        Assert.assertSame(COLLISION_2, pool.addOrGet(COLLISION_2));
 
         // put chained items into a pool without causing a rehash
         Pool<Integer> olympicPool = UnifiedSetWithHashingStrategy.newSet(INTEGER_HASHING_STRATEGY);
-        Assert.assertSame(COLLISION_1, olympicPool.put(COLLISION_1));
-        Assert.assertSame(COLLISION_2, olympicPool.put(COLLISION_2));
+        Assert.assertSame(COLLISION_1, olympicPool.addOrGet(COLLISION_1));
+        Assert.assertSame(COLLISION_2, olympicPool.addOrGet(COLLISION_2));
     }
 
     @Test
@@ -581,20 +581,20 @@ public class UnifiedSetWithHashingStrategyTest extends AbstractUnifiedSetTestCas
         UnifiedSetWithHashingStrategy<Person> people = UnifiedSetWithHashingStrategy.newSet(
                 HashingStrategies.nullSafeHashingStrategy(LAST_NAME_HASHING_STRATEGY), 2).withAll(PEOPLE.castToList());
         //Testing if element already exists, returns the instance in the set
-        Assert.assertSame(JOHNSMITH, people.put(new Person("Anything", "Smith")));
+        Assert.assertSame(JOHNSMITH, people.addOrGet(new Person("Anything", "Smith")));
         Verify.assertSize(2, people);
 
         //Testing if the element doesn't exist, returns the element itself
         Person notInSet = new Person("Not", "inSet");
-        Assert.assertSame(notInSet, people.put(notInSet));
+        Assert.assertSame(notInSet, people.addOrGet(notInSet));
         Verify.assertSize(3, people);
 
         //Testing putting a null to force a rehash
-        Assert.assertNull(people.put(null));
+        Assert.assertNull(people.addOrGet(null));
         Verify.assertSize(4, people);
 
         //Testing put throws NullPointerException if the hashingStrategy is not null safe
-        Verify.assertThrows(NullPointerException.class, () -> UnifiedSetWithHashingStrategy.newSet(LAST_NAME_HASHING_STRATEGY).put(null));
+        Verify.assertThrows(NullPointerException.class, () -> UnifiedSetWithHashingStrategy.newSet(LAST_NAME_HASHING_STRATEGY).addOrGet(null));
     }
 
     @Test

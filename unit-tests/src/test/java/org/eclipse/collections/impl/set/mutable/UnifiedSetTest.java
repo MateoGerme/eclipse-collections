@@ -192,7 +192,7 @@ public class UnifiedSetTest extends AbstractMutableSetTestCase
         for (int i = 0; i < set.size(); i++)
         {
             Integer value = COLLISIONS.get(i);
-            Assert.assertSame(value, set.put(value));
+            Assert.assertSame(value, set.addOrGet(value));
         }
 
         // force rehashing at each step of putting a new colliding entry
@@ -201,15 +201,15 @@ public class UnifiedSetTest extends AbstractMutableSetTestCase
             Pool<Integer> pool = UnifiedSet.<Integer>newSet(i).withAll(COLLISIONS.subList(0, i));
             if (i == 2)
             {
-                pool.put(Integer.valueOf(1));
+                pool.addOrGet(Integer.valueOf(1));
             }
             if (i == 4)
             {
-                pool.put(Integer.valueOf(1));
-                pool.put(Integer.valueOf(2));
+                pool.addOrGet(Integer.valueOf(1));
+                pool.addOrGet(Integer.valueOf(2));
             }
             Integer value = COLLISIONS.get(i);
-            Assert.assertSame(value, pool.put(value));
+            Assert.assertSame(value, pool.addOrGet(value));
         }
 
         // cover one case not covered in the above: a bucket with only one entry and a low capacity forcing a rehash
@@ -218,16 +218,16 @@ public class UnifiedSetTest extends AbstractMutableSetTestCase
         // clear the bucket to one element
         pool.removeFromPool(COLLISION_2);
         // increase the occupied count to the threshold
-        pool.put(Integer.valueOf(1));
-        pool.put(Integer.valueOf(2));
+        pool.addOrGet(Integer.valueOf(1));
+        pool.addOrGet(Integer.valueOf(2));
 
         // put the colliding value back and force the rehash
-        Assert.assertSame(COLLISION_2, pool.put(COLLISION_2));
+        Assert.assertSame(COLLISION_2, pool.addOrGet(COLLISION_2));
 
         // put chained items into a pool without causing a rehash
         Pool<Integer> olympicPool = UnifiedSet.newSet();
-        Assert.assertSame(COLLISION_1, olympicPool.put(COLLISION_1));
-        Assert.assertSame(COLLISION_2, olympicPool.put(COLLISION_2));
+        Assert.assertSame(COLLISION_1, olympicPool.addOrGet(COLLISION_1));
+        Assert.assertSame(COLLISION_2, olympicPool.addOrGet(COLLISION_2));
     }
 
     @Test

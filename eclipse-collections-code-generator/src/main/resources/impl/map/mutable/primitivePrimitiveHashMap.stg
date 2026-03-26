@@ -1683,8 +1683,8 @@ int probeTwo(<type1> element, int removedIndex)
 
 int probeThree(<type1> element, int removedIndex)
 {
-    int nextIndex = (int) ProbeSpreadFunctions.<type1>SpreadOne(element)<if(sameTwoPrimitives)> \<\< 1<endif>;
-    int spreadTwo = <(reverseSpread.(type1))()>(ProbeSpreadFunctions.<type1>SpreadTwo(element)) | 1;
+    int nextIndex = (int) ProbeSpreadFunctions.<type1>Spread(element, ProbeSpreadFunctions.SpreadVariant.PRIMARY)<if(sameTwoPrimitives)> \<\< 1<endif>;
+    int spreadTwo = <(reverseSpread.(type1))()>(ProbeSpreadFunctions.<type1>Spread(element, ProbeSpreadFunctions.SpreadVariant.SECONDARY)) | 1;
 
     while (true)
     {

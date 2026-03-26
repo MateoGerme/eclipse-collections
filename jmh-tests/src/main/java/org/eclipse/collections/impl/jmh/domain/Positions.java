@@ -53,11 +53,11 @@ public class Positions
 
     public Position createPosition()
     {
-        String accountName = this.stringPool.put(RandomStringUtils.randomNumeric(5));
-        String category = this.stringPool.put(RandomStringUtils.randomAlphabetic(1).toUpperCase());
-        String productName = this.stringPool.put(RandomStringUtils.randomNumeric(3));
-        Account account = this.accountPool.put(new Account(accountName));
-        Product product = this.productPool.put(new Product(productName, category, DOUBLES.nextDouble()));
+        String accountName = this.stringPool.addOrGet(RandomStringUtils.randomNumeric(5));
+        String category = this.stringPool.addOrGet(RandomStringUtils.randomAlphabetic(1).toUpperCase());
+        String productName = this.stringPool.addOrGet(RandomStringUtils.randomNumeric(3));
+        Account account = this.accountPool.addOrGet(new Account(accountName));
+        Product product = this.productPool.addOrGet(new Product(productName, category, DOUBLES.nextDouble()));
         return new Position(account, product, INTS.nextInt());
     }
 

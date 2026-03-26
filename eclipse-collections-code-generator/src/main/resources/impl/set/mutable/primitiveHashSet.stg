@@ -1037,8 +1037,8 @@ public class <name>HashSet extends Abstract<name>Set implements Mutable<name>Set
 
     int probeThree(<type> element, int removedIndex)
     {
-        int nextIndex = <(reverseSpread.(type))()>(ProbeSpreadFunctions.<type>SpreadOne(element));
-        int spreadTwo = <(reverseSpread.(type))()>(ProbeSpreadFunctions.<type>SpreadTwo(element)) | 1;
+        int nextIndex = <(reverseSpread.(type))()>(ProbeSpreadFunctions.<type>Spread(element, ProbeSpreadFunctions.SpreadVariant.PRIMARY));
+        int spreadTwo = <(reverseSpread.(type))()>(ProbeSpreadFunctions.<type>Spread(element, ProbeSpreadFunctions.SpreadVariant.SECONDARY)) | 1;
 
         while (true)
         {
@@ -1546,8 +1546,8 @@ public class <name>HashSet extends Abstract<name>Set implements Mutable<name>Set
 
         int probeThree(<type> element, int removedIndex)
         {
-            int nextIndex = <(reverseSpread.(type))()>(ProbeSpreadFunctions.<type>SpreadOne(element));
-            int spreadTwo = <(reverseSpread.(type))()>(ProbeSpreadFunctions.<type>SpreadTwo(element)) | 1;
+            int nextIndex = <(reverseSpread.(type))()>(ProbeSpreadFunctions.<type>Spread(element, ProbeSpreadFunctions.SpreadVariant.PRIMARY));
+            int spreadTwo = <(reverseSpread.(type))()>(ProbeSpreadFunctions.<type>Spread(element, ProbeSpreadFunctions.SpreadVariant.SECONDARY)) | 1;
 
             while (true)
             {

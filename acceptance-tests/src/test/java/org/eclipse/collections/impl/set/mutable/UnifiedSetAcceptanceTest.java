@@ -794,19 +794,19 @@ public class UnifiedSetAcceptanceTest
         for (int i = 0; i < toPool.length; i++)
         {
             toPool[i] = new CollidingInt(i, shift);
-            Assert.assertSame(toPool[i], set.put(toPool[i]));
+            Assert.assertSame(toPool[i], set.addOrGet(toPool[i]));
         }
 
         for (int i = 0; i < toPool.length; i++)
         {
-            Assert.assertSame(toPool[i], set.put(new CollidingInt(i, shift)));
+            Assert.assertSame(toPool[i], set.addOrGet(new CollidingInt(i, shift)));
         }
 
         Random random = new Random();
         for (int i = 0; i < toPool.length * 4; i++)
         {
             int x = random.nextInt(toPool.length);
-            Assert.assertSame(toPool[x], set.put(new CollidingInt(x, shift)));
+            Assert.assertSame(toPool[x], set.addOrGet(new CollidingInt(x, shift)));
         }
 
         for (int i = 0; i < toPool.length; i++)
@@ -845,19 +845,19 @@ public class UnifiedSetAcceptanceTest
         UnifiedSet<CollidingInt> set = new UnifiedSet<>();
         for (int i = 0; i < toPool.length; i++)
         {
-            Assert.assertSame(toPool[i], set.put(toPool[i]));
+            Assert.assertSame(toPool[i], set.addOrGet(toPool[i]));
         }
 
         for (int i = 0; i < toPool.length; i++)
         {
-            Assert.assertSame(toPool[i], set.put(new CollidingInt(toPool[i].getValue(), shift)));
+            Assert.assertSame(toPool[i], set.addOrGet(new CollidingInt(toPool[i].getValue(), shift)));
         }
 
         Random random = new Random();
         for (int i = 0; i < toPool.length * 4; i++)
         {
             int x = random.nextInt(toPool.length);
-            Assert.assertSame(toPool[x], set.put(new CollidingInt(toPool[x].getValue(), shift)));
+            Assert.assertSame(toPool[x], set.addOrGet(new CollidingInt(toPool[x].getValue(), shift)));
         }
 
         for (int i = 0; i < toPool.length; i++)

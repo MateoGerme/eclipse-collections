@@ -690,8 +690,8 @@ public class AggregateByTest extends AbstractJMHTestRunner
 
     private final class Position
     {
-        private final Account account = AggregateByTest.this.accountPool.put(new Account());
-        private final Product product = AggregateByTest.this.productPool.put(new Product());
+        private final Account account = AggregateByTest.this.accountPool.addOrGet(new Account());
+        private final Product product = AggregateByTest.this.productPool.addOrGet(new Product());
         private final int quantity = INTS.nextInt();
 
         public Account getAccount()
@@ -756,7 +756,7 @@ public class AggregateByTest extends AbstractJMHTestRunner
     private final class Product
     {
         private final String name = RandomStringUtils.randomNumeric(3);
-        private final String category = AggregateByTest.this.categoryPool.put(RandomStringUtils.randomAlphabetic(1).toUpperCase());
+        private final String category = AggregateByTest.this.categoryPool.addOrGet(RandomStringUtils.randomAlphabetic(1).toUpperCase());
         private final double price = DOUBLES.nextDouble();
 
         public String getName()
