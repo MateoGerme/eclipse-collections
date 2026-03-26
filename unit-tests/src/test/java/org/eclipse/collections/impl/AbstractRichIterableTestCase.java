@@ -413,6 +413,33 @@ public abstract class AbstractRichIterableTestCase
     }
 
     @Test
+    public void targetMethodsReturnTheProvidedTarget()
+    {
+        MutableSet<Integer> selectTarget = UnifiedSet.newSet();
+        MutableSet<Integer> selectResult = this.newWith(1, 2, 3, 4).select(Predicates.lessThan(3), selectTarget);
+        Assert.assertSame("Target collection sent as parameter not returned", selectTarget, selectResult);
+        Assert.assertEquals(UnifiedSet.newSetWith(1, 2), selectResult);
+
+        MutableList<String> collectTarget = Lists.mutable.empty();
+        MutableList<String> collectResult = this.newWith(1, 2, 3).collect(String::valueOf, collectTarget);
+        Assert.assertSame("Target collection sent as parameter not returned", collectTarget, collectResult);
+        Assert.assertEquals(Lists.mutable.with("1", "2", "3"), collectResult);
+
+        MutableMap<Integer, Integer> groupByUniqueKeyTarget = UnifiedMap.newMap();
+        MutableMap<Integer, Integer> groupByUniqueKeyResult =
+                this.newWith(1, 2, 3).groupByUniqueKey(id -> id, groupByUniqueKeyTarget);
+        Assert.assertSame("Target map sent as parameter not returned", groupByUniqueKeyTarget, groupByUniqueKeyResult);
+        Assert.assertEquals(UnifiedMap.newWithKeysValues(1, 1, 2, 2, 3, 3), groupByUniqueKeyResult);
+
+        MutableSet<Pair<Integer, Integer>> zipWithIndexTarget = UnifiedSet.newSet();
+        MutableSet<Pair<Integer, Integer>> zipWithIndexResult = this.newWith(1, 2, 3).zipWithIndex(zipWithIndexTarget);
+        Assert.assertSame("Target collection sent as parameter not returned", zipWithIndexTarget, zipWithIndexResult);
+        Assert.assertEquals(
+                UnifiedSet.newSetWith(Tuples.pair(1, 0), Tuples.pair(2, 1), Tuples.pair(3, 2)),
+                zipWithIndexResult);
+    }
+
+    @Test
     public void collectBoolean()
     {
         BooleanIterable result = this.newWith(1, 0).collectBoolean(PrimitiveFunctions.integerIsPositive());

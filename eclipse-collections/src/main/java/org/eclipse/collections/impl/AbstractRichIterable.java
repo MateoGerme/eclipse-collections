@@ -71,7 +71,6 @@ import org.eclipse.collections.impl.block.factory.Functions;
 import org.eclipse.collections.impl.block.factory.Predicates;
 import org.eclipse.collections.impl.block.factory.Predicates2;
 import org.eclipse.collections.impl.block.factory.Procedures;
-import org.eclipse.collections.impl.block.factory.Procedures2;
 import org.eclipse.collections.impl.block.procedure.AppendStringProcedure;
 import org.eclipse.collections.impl.block.procedure.BiMapCollectProcedure;
 import org.eclipse.collections.impl.block.procedure.CollectIfProcedure;
@@ -166,9 +165,7 @@ public abstract class AbstractRichIterable<T> implements RichIterable<T>
     @Override
     public MutableList<T> toList()
     {
-        MutableList<T> list = Lists.mutable.empty();
-        this.forEachWith(Procedures2.addToCollection(), list);
-        return list;
+        return this.into(Lists.mutable.empty());
     }
 
     @Override
@@ -180,17 +177,13 @@ public abstract class AbstractRichIterable<T> implements RichIterable<T>
     @Override
     public MutableSortedSet<T> toSortedSet()
     {
-        MutableSortedSet<T> treeSet = SortedSets.mutable.empty();
-        this.forEachWith(Procedures2.addToCollection(), treeSet);
-        return treeSet;
+        return this.into(SortedSets.mutable.empty());
     }
 
     @Override
     public MutableSortedSet<T> toSortedSet(Comparator<? super T> comparator)
     {
-        MutableSortedSet<T> treeSet = SortedSets.mutable.with(comparator);
-        this.forEachWith(Procedures2.addToCollection(), treeSet);
-        return treeSet;
+        return this.into(SortedSets.mutable.with(comparator));
     }
 
     @Override
@@ -202,33 +195,25 @@ public abstract class AbstractRichIterable<T> implements RichIterable<T>
     @Override
     public MutableSet<T> toSet()
     {
-        MutableSet<T> set = Sets.mutable.empty();
-        this.forEachWith(Procedures2.addToCollection(), set);
-        return set;
+        return this.into(Sets.mutable.empty());
     }
 
     @Override
     public MutableBag<T> toBag()
     {
-        MutableBag<T> bag = Bags.mutable.empty();
-        this.forEachWith(Procedures2.addToCollection(), bag);
-        return bag;
+        return this.into(Bags.mutable.empty());
     }
 
     @Override
     public MutableSortedBag<T> toSortedBag()
     {
-        MutableSortedBag<T> sortedBag = TreeBag.newBag();
-        this.forEachWith(Procedures2.addToCollection(), sortedBag);
-        return sortedBag;
+        return this.into(TreeBag.newBag());
     }
 
     @Override
     public MutableSortedBag<T> toSortedBag(Comparator<? super T> comparator)
     {
-        MutableSortedBag<T> sortedBag = TreeBag.newBag(comparator);
-        this.forEachWith(Procedures2.addToCollection(), sortedBag);
-        return sortedBag;
+        return this.into(TreeBag.newBag(comparator));
     }
 
     @Override
@@ -243,8 +228,7 @@ public abstract class AbstractRichIterable<T> implements RichIterable<T>
             Function<? super T, ? extends V> valueFunction)
     {
         MutableMap<K, V> map = Maps.mutable.empty();
-        this.forEach(new MapCollectProcedure<>(map, keyFunction, valueFunction));
-        return map;
+        return this.forEachAndReturn(new MapCollectProcedure<>(map, keyFunction, valueFunction), map);
     }
 
     @Override
@@ -253,8 +237,7 @@ public abstract class AbstractRichIterable<T> implements RichIterable<T>
             Function<? super T, ? extends V> valueFunction)
     {
         MutableSortedMap<K, V> sortedMap = SortedMaps.mutable.empty();
-        this.forEach(new MapCollectProcedure<>(sortedMap, keyFunction, valueFunction));
-        return sortedMap;
+        return this.forEachAndReturn(new MapCollectProcedure<>(sortedMap, keyFunction, valueFunction), sortedMap);
     }
 
     @Override
@@ -264,8 +247,7 @@ public abstract class AbstractRichIterable<T> implements RichIterable<T>
             Function<? super T, ? extends V> valueFunction)
     {
         MutableSortedMap<K, V> sortedMap = SortedMaps.mutable.with(comparator);
-        this.forEach(new MapCollectProcedure<>(sortedMap, keyFunction, valueFunction));
-        return sortedMap;
+        return this.forEachAndReturn(new MapCollectProcedure<>(sortedMap, keyFunction, valueFunction), sortedMap);
     }
 
     @Override
@@ -283,15 +265,13 @@ public abstract class AbstractRichIterable<T> implements RichIterable<T>
             Function<? super T, ? extends V> valueFunction)
     {
         MutableBiMap<K, V> biMap = BiMaps.mutable.empty();
-        this.forEach(new BiMapCollectProcedure<>(biMap, keyFunction, valueFunction));
-        return biMap;
+        return this.forEachAndReturn(new BiMapCollectProcedure<>(biMap, keyFunction, valueFunction), biMap);
     }
 
     @Override
     public <R extends Collection<T>> R select(Predicate<? super T> predicate, R target)
     {
-        this.forEach(new SelectProcedure<>(predicate, target));
-        return target;
+        return this.forEachAndReturn(new SelectProcedure<>(predicate, target), target);
     }
 
     @Override
@@ -306,8 +286,7 @@ public abstract class AbstractRichIterable<T> implements RichIterable<T>
     @Override
     public <R extends Collection<T>> R reject(Predicate<? super T> predicate, R target)
     {
-        this.forEach(new RejectProcedure<>(predicate, target));
-        return target;
+        return this.forEachAndReturn(new RejectProcedure<>(predicate, target), target);
     }
 
     @Override
@@ -322,8 +301,7 @@ public abstract class AbstractRichIterable<T> implements RichIterable<T>
     @Override
     public <V, R extends Collection<V>> R collect(Function<? super T, ? extends V> function, R target)
     {
-        this.forEach(new CollectProcedure<>(function, target));
-        return target;
+        return this.forEachAndReturn(new CollectProcedure<>(function, target), target);
     }
 
     @Override
@@ -341,8 +319,7 @@ public abstract class AbstractRichIterable<T> implements RichIterable<T>
             Function<? super T, ? extends V> function,
             R target)
     {
-        this.forEach(new CollectIfProcedure<>(target, function, predicate));
-        return target;
+        return this.forEachAndReturn(new CollectIfProcedure<>(target, function, predicate), target);
     }
 
     @Override
@@ -413,8 +390,7 @@ public abstract class AbstractRichIterable<T> implements RichIterable<T>
             Function<? super T, ? extends Iterable<V>> function,
             R target)
     {
-        this.forEach(new FlatCollectProcedure<>(function, target));
-        return target;
+        return this.forEachAndReturn(new FlatCollectProcedure<>(function, target), target);
     }
 
     @Override
@@ -587,6 +563,12 @@ public abstract class AbstractRichIterable<T> implements RichIterable<T>
         this.forEach(Procedures.bind(procedure, parameter));
     }
 
+    private <R> R forEachAndReturn(Procedure<? super T> procedure, R target)
+    {
+        this.forEach(procedure);
+        return target;
+    }
+
     @Override
     public <S, R extends Collection<Pair<T, S>>> R zip(Iterable<S> that, R target)
     {
@@ -596,8 +578,7 @@ public abstract class AbstractRichIterable<T> implements RichIterable<T>
     @Override
     public <R extends Collection<Pair<T, Integer>>> R zipWithIndex(R target)
     {
-        this.forEach(ZipWithIndexProcedure.create(target));
-        return target;
+        return this.forEachAndReturn(ZipWithIndexProcedure.create(target), target);
     }
 
     /**
@@ -651,57 +632,49 @@ public abstract class AbstractRichIterable<T> implements RichIterable<T>
     @Override
     public <R extends MutableBooleanCollection> R collectBoolean(BooleanFunction<? super T> booleanFunction, R target)
     {
-        this.forEach(new CollectBooleanProcedure<>(booleanFunction, target));
-        return target;
+        return this.forEachAndReturn(new CollectBooleanProcedure<>(booleanFunction, target), target);
     }
 
     @Override
     public <R extends MutableByteCollection> R collectByte(ByteFunction<? super T> byteFunction, R target)
     {
-        this.forEach(new CollectByteProcedure<>(byteFunction, target));
-        return target;
+        return this.forEachAndReturn(new CollectByteProcedure<>(byteFunction, target), target);
     }
 
     @Override
     public <R extends MutableCharCollection> R collectChar(CharFunction<? super T> charFunction, R target)
     {
-        this.forEach(new CollectCharProcedure<>(charFunction, target));
-        return target;
+        return this.forEachAndReturn(new CollectCharProcedure<>(charFunction, target), target);
     }
 
     @Override
     public <R extends MutableDoubleCollection> R collectDouble(DoubleFunction<? super T> doubleFunction, R target)
     {
-        this.forEach(new CollectDoubleProcedure<>(doubleFunction, target));
-        return target;
+        return this.forEachAndReturn(new CollectDoubleProcedure<>(doubleFunction, target), target);
     }
 
     @Override
     public <R extends MutableFloatCollection> R collectFloat(FloatFunction<? super T> floatFunction, R target)
     {
-        this.forEach(new CollectFloatProcedure<>(floatFunction, target));
-        return target;
+        return this.forEachAndReturn(new CollectFloatProcedure<>(floatFunction, target), target);
     }
 
     @Override
     public <R extends MutableIntCollection> R collectInt(IntFunction<? super T> intFunction, R target)
     {
-        this.forEach(new CollectIntProcedure<>(intFunction, target));
-        return target;
+        return this.forEachAndReturn(new CollectIntProcedure<>(intFunction, target), target);
     }
 
     @Override
     public <R extends MutableLongCollection> R collectLong(LongFunction<? super T> longFunction, R target)
     {
-        this.forEach(new CollectLongProcedure<>(longFunction, target));
-        return target;
+        return this.forEachAndReturn(new CollectLongProcedure<>(longFunction, target), target);
     }
 
     @Override
     public <R extends MutableShortCollection> R collectShort(ShortFunction<? super T> shortFunction, R target)
     {
-        this.forEach(new CollectShortProcedure<>(shortFunction, target));
-        return target;
+        return this.forEachAndReturn(new CollectShortProcedure<>(shortFunction, target), target);
     }
 
     /**
@@ -718,8 +691,7 @@ public abstract class AbstractRichIterable<T> implements RichIterable<T>
             Function<? super T, ? extends V> function,
             R target)
     {
-        this.forEach(MultimapPutProcedure.on(target, function));
-        return target;
+        return this.forEachAndReturn(MultimapPutProcedure.on(target, function), target);
     }
 
     @Override
@@ -727,8 +699,7 @@ public abstract class AbstractRichIterable<T> implements RichIterable<T>
             Function<? super T, ? extends Iterable<V>> function,
             R target)
     {
-        this.forEach(MultimapEachPutProcedure.on(target, function));
-        return target;
+        return this.forEachAndReturn(MultimapEachPutProcedure.on(target, function), target);
     }
 
     @Override
@@ -736,7 +707,6 @@ public abstract class AbstractRichIterable<T> implements RichIterable<T>
             Function<? super T, ? extends V> function,
             R target)
     {
-        this.forEach(new GroupByUniqueKeyProcedure<>(target, function));
-        return target;
+        return this.forEachAndReturn(new GroupByUniqueKeyProcedure<>(target, function), target);
     }
 }
