@@ -2102,12 +2102,7 @@ public class UnifiedSet<T>
 
         if (cur == null)
         {
-            this.table[index] = UnifiedSet.toSentinelIfNull(key);
-            if (++this.occupied > this.maxSize)
-            {
-                this.rehash();
-            }
-            return key;
+            return this.addAtIndexAndReturnKey(index, key);
         }
 
         if (cur instanceof ChainedBucket || !this.nonNullTableObjectEquals(cur, key))
@@ -2120,9 +2115,10 @@ public class UnifiedSet<T>
     private T chainedPut(T key, int index)
     {
         Object realKey = UnifiedSet.toSentinelIfNull(key);
-        if (this.table[index] instanceof ChainedBucket)
+        Object tableEntry = this.table[index];
+        if (tableEntry instanceof ChainedBucket)
         {
-            ChainedBucket bucket = (ChainedBucket) this.table[index];
+            ChainedBucket bucket = (ChainedBucket) tableEntry;
             do
             {
                 if (this.nonNullTableObjectEquals(bucket.zero, key))
@@ -2132,11 +2128,7 @@ public class UnifiedSet<T>
                 if (bucket.one == null)
                 {
                     bucket.one = realKey;
-                    if (++this.occupied > this.maxSize)
-                    {
-                        this.rehash();
-                    }
-                    return key;
+                    return this.addedKey(key);
                 }
                 if (this.nonNullTableObjectEquals(bucket.one, key))
                 {
@@ -2145,11 +2137,7 @@ public class UnifiedSet<T>
                 if (bucket.two == null)
                 {
                     bucket.two = realKey;
-                    if (++this.occupied > this.maxSize)
-                    {
-                        this.rehash();
-                    }
-                    return key;
+                    return this.addedKey(key);
                 }
                 if (this.nonNullTableObjectEquals(bucket.two, key))
                 {
@@ -2163,32 +2151,44 @@ public class UnifiedSet<T>
                 if (bucket.three == null)
                 {
                     bucket.three = realKey;
-                    if (++this.occupied > this.maxSize)
-                    {
-                        this.rehash();
-                    }
-                    return key;
+                    return this.addedKey(key);
                 }
                 if (this.nonNullTableObjectEquals(bucket.three, key))
                 {
                     return this.nonSentinel(bucket.three);
                 }
                 bucket.three = new ChainedBucket(bucket.three, realKey);
-                if (++this.occupied > this.maxSize)
-                {
-                    this.rehash();
-                }
-                return key;
+                return this.addedKey(key);
             }
             while (true);
         }
-        ChainedBucket newBucket = new ChainedBucket(this.table[index], realKey);
-        this.table[index] = newBucket;
+        return this.addToNewBucketAndReturnKey(key, index, tableEntry, realKey);
+    }
+
+    private T addAtIndexAndReturnKey(int index, T key)
+    {
+        this.table[index] = UnifiedSet.toSentinelIfNull(key);
+        return this.addedKey(key);
+    }
+
+    private T addToNewBucketAndReturnKey(T key, int index, Object existingValue, Object newValue)
+    {
+        this.table[index] = new ChainedBucket(existingValue, newValue);
+        return this.addedKey(key);
+    }
+
+    private T addedKey(T key)
+    {
+        this.incrementOccupiedAndRehashIfNecessary();
+        return key;
+    }
+
+    private void incrementOccupiedAndRehashIfNecessary()
+    {
         if (++this.occupied > this.maxSize)
         {
             this.rehash();
         }
-        return key;
     }
 
     @Override
