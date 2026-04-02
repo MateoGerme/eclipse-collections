@@ -435,7 +435,7 @@ public abstract class AbstractRichIterableTestCase
         MutableSet<Pair<Integer, Integer>> zipWithIndexResult = this.newWith(1, 2, 3).zipWithIndex(zipWithIndexTarget);
         Assert.assertSame("Target collection sent as parameter not returned", zipWithIndexTarget, zipWithIndexResult);
         Assert.assertEquals(
-                UnifiedSet.newSetWith(Tuples.pair(1, 0), Tuples.pair(2, 1), Tuples.pair(3, 2)),
+                this.newWith(1, 2, 3).zipWithIndex().toSet(),
                 zipWithIndexResult);
     }
 

@@ -71,6 +71,7 @@ import org.eclipse.collections.impl.block.factory.Functions;
 import org.eclipse.collections.impl.block.factory.Predicates;
 import org.eclipse.collections.impl.block.factory.Predicates2;
 import org.eclipse.collections.impl.block.factory.Procedures;
+import org.eclipse.collections.impl.block.factory.Procedures2;
 import org.eclipse.collections.impl.block.procedure.AppendStringProcedure;
 import org.eclipse.collections.impl.block.procedure.BiMapCollectProcedure;
 import org.eclipse.collections.impl.block.procedure.CollectIfProcedure;
@@ -502,7 +503,8 @@ public abstract class AbstractRichIterable<T> implements RichIterable<T>
     @Override
     public <R extends Collection<T>> R into(R target)
     {
-        return Iterate.addAllTo(this, target);
+        this.forEachWith(Procedures2.addToCollection(), target);
+        return target;
     }
 
     @Override
