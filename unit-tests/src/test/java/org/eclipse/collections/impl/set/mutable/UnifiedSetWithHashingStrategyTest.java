@@ -526,9 +526,9 @@ public class UnifiedSetWithHashingStrategyTest extends AbstractUnifiedSetTestCas
                     INTEGER_HASHING_STRATEGY, 1).withAll(MORE_COLLISIONS.subList(0, i - 1));
             Integer newValue = MORE_COLLISIONS.get(i - 1);
 
-            Assert.assertSame(newValue, UnifiedSet.addOrGet(newValue));
+            Assert.assertSame(newValue, unifiedSet.addOrGet(newValue));
             //noinspection UnnecessaryBoxing,CachedNumberConstructorCall,BoxingBoxedValue
-            Assert.assertSame(newValue, UnifiedSet.addOrGet(new Integer(newValue)));
+            Assert.assertSame(newValue, unifiedSet.addOrGet(new Integer(newValue)));
         }
 
         // assert that all redundant puts into a each position of chain bucket return the original element added
@@ -772,8 +772,8 @@ public class UnifiedSetWithHashingStrategyTest extends AbstractUnifiedSetTestCas
 
             Verify.assertPostSerializedEqualsAndHashCode(unifiedSet);
 
-            Assert.assertNull(UnifiedSet.addOrGet(null));
-            Assert.assertNull(UnifiedSet.addOrGet(null));
+            Assert.assertNull(unifiedSet.addOrGet(null));
+            Assert.assertNull(unifiedSet.addOrGet(null));
             Assert.assertNull(unifiedSet.removeFromPool(null));
             Assert.assertNull(unifiedSet.removeFromPool(null));
 

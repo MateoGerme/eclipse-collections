@@ -423,7 +423,7 @@ public abstract class AbstractRichIterableTestCase
         MutableList<String> collectTarget = Lists.mutable.empty();
         MutableList<String> collectResult = this.newWith(1, 2, 3).collect(String::valueOf, collectTarget);
         Assert.assertSame("Target collection sent as parameter not returned", collectTarget, collectResult);
-        Assert.assertEquals(Lists.mutable.with("1", "2", "3"), collectResult);
+        Assert.assertEquals(Bags.mutable.with("1", "2", "3"), collectResult.toBag());
 
         MutableMap<Integer, Integer> groupByUniqueKeyTarget = UnifiedMap.newMap();
         MutableMap<Integer, Integer> groupByUniqueKeyResult =
