@@ -42,7 +42,7 @@ import org.eclipse.collections.impl.block.factory.Predicates;
 import org.eclipse.collections.impl.block.procedure.MapCollectProcedure;
 import org.eclipse.collections.impl.factory.HashingStrategyMaps;
 import org.eclipse.collections.impl.list.mutable.FastList;
-import org.eclipse.collections.impl.map.mutable.AbstractMutableMap;
+import org.eclipse.collections.impl.map.mutable.AbstractUnifiedMap;
 import org.eclipse.collections.impl.parallel.BatchIterable;
 import org.eclipse.collections.impl.set.strategy.mutable.UnifiedSetWithHashingStrategy;
 import org.eclipse.collections.impl.tuple.ImmutableEntry;
@@ -62,64 +62,10 @@ import org.eclipse.collections.impl.utility.Iterate;
  */
 
 @SuppressWarnings("ObjectEquality")
-public class UnifiedMapWithHashingStrategy<K, V> extends AbstractMutableMap<K, V>
+public class UnifiedMapWithHashingStrategy<K, V> extends AbstractUnifiedMap<K, V>
         implements Externalizable, BatchIterable<V>
 {
-    protected static final Object NULL_KEY = new Object()
-    {
-        @Override
-        public boolean equals(Object obj)
-        {
-            throw new RuntimeException("Possible corruption through unsynchronized concurrent modification.");
-        }
-
-        @Override
-        public int hashCode()
-        {
-            throw new RuntimeException("Possible corruption through unsynchronized concurrent modification.");
-        }
-
-        @Override
-        public String toString()
-        {
-            return "UnifiedMapWithHashingStrategy.NULL_KEY";
-        }
-    };
-
-    protected static final Object CHAINED_KEY = new Object()
-    {
-        @Override
-        public boolean equals(Object obj)
-        {
-            throw new RuntimeException("Possible corruption through unsynchronized concurrent modification.");
-        }
-
-        @Override
-        public int hashCode()
-        {
-            throw new RuntimeException("Possible corruption through unsynchronized concurrent modification.");
-        }
-
-        @Override
-        public String toString()
-        {
-            return "UnifiedMapWithHashingStrategy.CHAINED_KEY";
-        }
-    };
-
-    protected static final float DEFAULT_LOAD_FACTOR = 0.75f;
-
-    protected static final int DEFAULT_INITIAL_CAPACITY = 8;
-
     private static final long serialVersionUID = 1L;
-
-    protected transient Object[] table;
-
-    protected transient int occupied;
-
-    protected float loadFactor = DEFAULT_LOAD_FACTOR;
-
-    protected int maxSize;
 
     protected HashingStrategy<? super K> hashingStrategy;
 
@@ -314,146 +260,6 @@ public class UnifiedMapWithHashingStrategy<K, V> extends AbstractMutableMap<K, V
     public MutableMap<K, V> newEmpty(int capacity)
     {
         return new UnifiedMapWithHashingStrategy<>(this.hashingStrategy, capacity, this.loadFactor);
-    }
-
-    private int fastCeil(float v)
-    {
-        int possibleResult = (int) v;
-        if (v - possibleResult > 0.0F)
-        {
-            possibleResult++;
-        }
-        return possibleResult;
-    }
-
-    protected int init(int initialCapacity)
-    {
-        int capacity = 1;
-        while (capacity < initialCapacity)
-        {
-            capacity <<= 1;
-        }
-
-        return this.allocate(capacity);
-    }
-
-    protected int allocate(int capacity)
-    {
-        this.allocateTable(capacity << 1); // the table size is twice the capacity to handle both keys and values
-        this.computeMaxSize(capacity);
-
-        return capacity;
-    }
-
-    protected void allocateTable(int sizeToAllocate)
-    {
-        this.table = new Object[sizeToAllocate];
-    }
-
-    protected void computeMaxSize(int capacity)
-    {
-        // need at least one free slot for open addressing
-        this.maxSize = Math.min(capacity - 1, (int) (capacity * this.loadFactor));
-    }
-
-    protected int index(K key)
-    {
-        // This function ensures that hashCodes that differ only by
-        // constant multiples at each bit position have a bounded
-        // number of collisions (approximately 8 at default load factor).
-        int h = this.hashingStrategy.computeHashCode(key);
-        h ^= h >>> 20 ^ h >>> 12;
-        h ^= h >>> 7 ^ h >>> 4;
-        return (h & (this.table.length >> 1) - 1) << 1;
-    }
-
-    @Override
-    public void clear()
-    {
-        if (this.occupied == 0)
-        {
-            return;
-        }
-        this.occupied = 0;
-        Object[] set = this.table;
-
-        for (int i = set.length; i-- > 0; )
-        {
-            set[i] = null;
-        }
-    }
-
-    @Override
-    public V put(K key, V value)
-    {
-        int index = this.index(key);
-        Object cur = this.table[index];
-        if (cur == null)
-        {
-            this.table[index] = UnifiedMapWithHashingStrategy.toSentinelIfNull(key);
-            this.table[index + 1] = value;
-            if (++this.occupied > this.maxSize)
-            {
-                this.rehash(this.table.length);
-            }
-            return null;
-        }
-        if (cur != CHAINED_KEY && this.nonNullTableObjectEquals(cur, key))
-        {
-            V result = (V) this.table[index + 1];
-            this.table[index + 1] = value;
-            return result;
-        }
-        return this.chainedPut(key, index, value);
-    }
-
-    private V chainedPut(K key, int index, V value)
-    {
-        if (this.table[index] == CHAINED_KEY)
-        {
-            Object[] chain = (Object[]) this.table[index + 1];
-            for (int i = 0; i < chain.length; i += 2)
-            {
-                if (chain[i] == null)
-                {
-                    chain[i] = UnifiedMapWithHashingStrategy.toSentinelIfNull(key);
-                    chain[i + 1] = value;
-                    if (++this.occupied > this.maxSize)
-                    {
-                        this.rehash(this.table.length);
-                    }
-                    return null;
-                }
-                if (this.nonNullTableObjectEquals(chain[i], key))
-                {
-                    V result = (V) chain[i + 1];
-                    chain[i + 1] = value;
-                    return result;
-                }
-            }
-            Object[] newChain = new Object[chain.length + 4];
-            System.arraycopy(chain, 0, newChain, 0, chain.length);
-            this.table[index + 1] = newChain;
-            newChain[chain.length] = UnifiedMapWithHashingStrategy.toSentinelIfNull(key);
-            newChain[chain.length + 1] = value;
-            if (++this.occupied > this.maxSize)
-            {
-                this.rehash(this.table.length);
-            }
-            return null;
-        }
-        Object[] newChain = new Object[4];
-        newChain[0] = this.table[index];
-        newChain[1] = this.table[index + 1];
-        newChain[2] = UnifiedMapWithHashingStrategy.toSentinelIfNull(key);
-        newChain[3] = value;
-        this.table[index] = CHAINED_KEY;
-        this.table[index + 1] = newChain;
-        if (++this.occupied > this.maxSize)
-        {
-            this.rehash(this.table.length);
-        }
-        return null;
     }
 
     @Override
@@ -887,104 +693,6 @@ public class UnifiedMapWithHashingStrategy<K, V> extends AbstractMutableMap<K, V
             }
         }
         return sizeInWords;
-    }
-
-    protected void rehash(int newCapacity)
-    {
-        int oldLength = this.table.length;
-        Object[] old = this.table;
-        this.allocate(newCapacity);
-        this.occupied = 0;
-
-        for (int i = 0; i < oldLength; i += 2)
-        {
-            Object cur = old[i];
-            if (cur == CHAINED_KEY)
-            {
-                Object[] chain = (Object[]) old[i + 1];
-                for (int j = 0; j < chain.length; j += 2)
-                {
-                    if (chain[j] != null)
-                    {
-                        this.put(this.nonSentinel(chain[j]), (V) chain[j + 1]);
-                    }
-                }
-            }
-            else if (cur != null)
-            {
-                this.put(this.nonSentinel(cur), (V) old[i + 1]);
-            }
-        }
-    }
-
-    @Override
-    public V get(Object key)
-    {
-        int index = this.index((K) key);
-        Object cur = this.table[index];
-        if (cur != null)
-        {
-            Object val = this.table[index + 1];
-            if (cur == CHAINED_KEY)
-            {
-                return this.getFromChain((Object[]) val, (K) key);
-            }
-            if (this.nonNullTableObjectEquals(cur, (K) key))
-            {
-                return (V) val;
-            }
-        }
-        return null;
-    }
-
-    private V getFromChain(Object[] chain, K key)
-    {
-        for (int i = 0; i < chain.length; i += 2)
-        {
-            Object k = chain[i];
-            if (k == null)
-            {
-                return null;
-            }
-            if (this.nonNullTableObjectEquals(k, key))
-            {
-                return (V) chain[i + 1];
-            }
-        }
-        return null;
-    }
-
-    @Override
-    public boolean containsKey(Object key)
-    {
-        int index = this.index((K) key);
-        Object cur = this.table[index];
-        if (cur == null)
-        {
-            return false;
-        }
-        if (cur != CHAINED_KEY && this.nonNullTableObjectEquals(cur, (K) key))
-        {
-            return true;
-        }
-        return cur == CHAINED_KEY && this.chainContainsKey((Object[]) this.table[index + 1], (K) key);
-    }
-
-    private boolean chainContainsKey(Object[] chain, K key)
-    {
-        for (int i = 0; i < chain.length; i += 2)
-        {
-            Object k = chain[i];
-            if (k == null)
-            {
-                return false;
-            }
-            if (this.nonNullTableObjectEquals(k, key))
-            {
-                return true;
-            }
-        }
-        return false;
     }
 
     @Override
@@ -2902,28 +2610,21 @@ public class UnifiedMapWithHashingStrategy<K, V> extends AbstractMutableMap<K, V
         }
     }
 
-    private K nonSentinel(Object key)
-    {
-        return key == NULL_KEY ? null : (K) key;
-    }
-
-    private static Object toSentinelIfNull(Object key)
-    {
-        if (key == null)
-        {
-            return NULL_KEY;
-        }
-        return key;
-    }
-
-    private boolean nonNullTableObjectEquals(Object cur, K key)
-    {
-        return cur == key || (cur == NULL_KEY ? key == null : this.hashingStrategy.equals(this.nonSentinel(cur), key));
-    }
-
     @Override
     public ImmutableMap<K, V> toImmutable()
     {
         return HashingStrategyMaps.immutable.withAll(this);
+    }
+
+    @Override
+    protected int computeHashCode(Object key)
+    {
+        return this.hashingStrategy.computeHashCode((K) key);
+    }
+
+    @Override
+    protected boolean keysEqual(K left, K right)
+    {
+        return this.hashingStrategy.equals(left, right);
     }
 }
