@@ -105,7 +105,7 @@ public abstract class AbstractUnifiedMap<K, V> extends AbstractMutableMap<K, V>
         this.maxSize = Math.min(capacity - 1, (int) (capacity * this.loadFactor));
     }
 
-    protected final int index(Object key)
+    protected int index(K key)
     {
         int h = this.computeHashCode(key);
         h ^= h >>> 20 ^ h >>> 12;
@@ -132,7 +132,7 @@ public abstract class AbstractUnifiedMap<K, V> extends AbstractMutableMap<K, V>
     @Override
     public V put(K key, V value)
     {
-        int index = this.index(key);
+        int index = this.index((K) key);
         Object currentKey = this.table[index];
         if (currentKey == null)
         {
@@ -229,7 +229,7 @@ public abstract class AbstractUnifiedMap<K, V> extends AbstractMutableMap<K, V>
     @Override
     public V get(Object key)
     {
-        int index = this.index(key);
+        int index = this.index((K) key);
         Object currentKey = this.table[index];
         if (currentKey != null)
         {
@@ -266,7 +266,7 @@ public abstract class AbstractUnifiedMap<K, V> extends AbstractMutableMap<K, V>
     @Override
     public boolean containsKey(Object key)
     {
-        int index = this.index(key);
+        int index = this.index((K) key);
         Object currentKey = this.table[index];
         if (currentKey == null)
         {

@@ -104,7 +104,7 @@ public class UnifiedMapTest extends UnifiedMapTestCase
     {
         try
         {
-            Field tableField = UnifiedMap.class.getDeclaredField("table");
+            Field tableField = AbstractUnifiedMap.class.getDeclaredField("table");
             tableField.setAccessible(true);
 
             Object[] table = (Object[]) tableField.get(UnifiedMap.newMap(initialCapacity, loadFactor));
@@ -125,7 +125,7 @@ public class UnifiedMapTest extends UnifiedMapTestCase
         }
         catch (NoSuchFieldException ignored)
         {
-            Assert.fail("No field named table UnifiedMap");
+            Assert.fail("No field named table on AbstractUnifiedMap");
         }
         catch (IllegalAccessException ignored)
         {

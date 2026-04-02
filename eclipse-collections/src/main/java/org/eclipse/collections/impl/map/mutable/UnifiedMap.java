@@ -243,6 +243,11 @@ public class UnifiedMap<K, V> extends AbstractUnifiedMap<K, V>
         return this.chainedUpdateValue(key, index, factory, function);
     }
 
+    protected int index(Object key)
+    {
+        return super.index((K) key);
+    }
+
     private V chainedUpdateValue(K key, int index, Function0<? extends V> factory, Function<? super V, ? extends V> function)
     {
         if (this.table[index] == CHAINED_KEY)

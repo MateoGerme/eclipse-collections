@@ -2616,6 +2616,11 @@ public class UnifiedMapWithHashingStrategy<K, V> extends AbstractUnifiedMap<K, V
         return HashingStrategyMaps.immutable.withAll(this);
     }
 
+    protected int index(K key)
+    {
+        return super.index(key);
+    }
+
     @Override
     protected int computeHashCode(Object key)
     {
