@@ -166,7 +166,7 @@ public abstract class AbstractRichIterable<T> implements RichIterable<T>
     @Override
     public MutableList<T> toList()
     {
-        return this.into(Lists.mutable.empty());
+        return this.addToTarget(Lists.mutable.empty());
     }
 
     @Override
@@ -178,13 +178,13 @@ public abstract class AbstractRichIterable<T> implements RichIterable<T>
     @Override
     public MutableSortedSet<T> toSortedSet()
     {
-        return this.into(SortedSets.mutable.empty());
+        return this.addToTarget(SortedSets.mutable.empty());
     }
 
     @Override
     public MutableSortedSet<T> toSortedSet(Comparator<? super T> comparator)
     {
-        return this.into(SortedSets.mutable.with(comparator));
+        return this.addToTarget(SortedSets.mutable.with(comparator));
     }
 
     @Override
@@ -196,25 +196,25 @@ public abstract class AbstractRichIterable<T> implements RichIterable<T>
     @Override
     public MutableSet<T> toSet()
     {
-        return this.into(Sets.mutable.empty());
+        return this.addToTarget(Sets.mutable.empty());
     }
 
     @Override
     public MutableBag<T> toBag()
     {
-        return this.into(Bags.mutable.empty());
+        return this.addToTarget(Bags.mutable.empty());
     }
 
     @Override
     public MutableSortedBag<T> toSortedBag()
     {
-        return this.into(TreeBag.newBag());
+        return this.addToTarget(TreeBag.newBag());
     }
 
     @Override
     public MutableSortedBag<T> toSortedBag(Comparator<? super T> comparator)
     {
-        return this.into(TreeBag.newBag(comparator));
+        return this.addToTarget(TreeBag.newBag(comparator));
     }
 
     @Override
@@ -568,6 +568,12 @@ public abstract class AbstractRichIterable<T> implements RichIterable<T>
     private <R> R forEachAndReturn(Procedure<? super T> procedure, R target)
     {
         this.forEach(procedure);
+        return target;
+    }
+
+    private <R extends Collection<T>> R addToTarget(R target)
+    {
+        this.forEachWith(Procedures2.addToCollection(), target);
         return target;
     }
 
